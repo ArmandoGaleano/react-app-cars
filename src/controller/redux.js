@@ -1,24 +1,39 @@
 import { combineReducers, createStore } from 'redux';
+import uuid from 'uuid';
 const INITIAL_STATE = {
-    dbCars: [],
+    dbCars: [{
+        id: '',
+        cars: []
+    }],
 
-    filtersCar: []
+    filtersCar: [{
+        id: '',
+        cars: []
+    }]
 }
 
 //Redux
-
+const returnArrayCars = (payload) => {
+    let arrayCars = [];
+    
+    payload.map(car => {
+        arrayCars.push({ id: uuid(), car: car })
+    })
+    //console.log(arrayCars);
+    return arrayCars;
+}
 const checkFilter = (car, payload) => {
     let inputFilter = payload.toLowerCase().split('');
     let carName = car['carName'].toLowerCase().split('');
     let error = false
-    for(let i = 0;i < inputFilter.length; i++){
-        if(carName[i] !== inputFilter[i]){
+    for (let i = 0; i < inputFilter.length; i++) {
+        if (carName[i] !== inputFilter[i]) {
             error = true;
         }
     }
-    if(error){
+    if (error) {
         return false
-    }else{
+    } else {
         return true;
     }
 
@@ -27,13 +42,13 @@ const tableCars = (state = INITIAL_STATE, action) => {
     const { type, payload } = action;
     switch (type) {
         case 'SET_INTIAL_STATE':
-            return { ...state, dbCars: payload, filtersCar: payload }
+            return { ...state, dbCars: returnArrayCars(payload), filtersCar: returnArrayCars(payload) }
         case 'FILTER':
             {
                 if (payload === '') {
-                    return {...state, filtersCar: state.dbCars}
+                    return { ...state, filtersCar: state.dbCars }
                 } else {
-                    return { ...state, filtersCar: state.dbCars.filter(car => checkFilter(car, payload)) }
+                    return { ...state, filtersCar: state.dbCars.filter(({id, car}) => checkFilter(car, payload)) }
                 }
             }
         default:

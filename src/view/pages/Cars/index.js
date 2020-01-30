@@ -19,7 +19,7 @@ class Cars extends Component {
                 return response.json();
             })
             .then((responseJson) => {
-                store.dispatch(actions.setInitialState(responseJson));
+                store.dispatch(actions.setInitialState(responseJson))
             })
 
     }
@@ -32,6 +32,7 @@ class Cars extends Component {
     }
     componentDidMount(){
         this.setBodyBG();
+        console.log('ok')
     }
     render() {
         return (

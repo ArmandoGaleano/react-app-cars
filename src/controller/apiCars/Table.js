@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { store, actions } from '../redux';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { TableStyled, TrHead, TrBody, Td } from '../../view/components/TableStyled';
+import { TableStyled, Head, TrBody, Td, Container, Th } from '../../view/components/TableStyled';
+import './Table.css';
 import uuid from 'uuid';
 
 class Table extends Component {
@@ -9,60 +10,85 @@ class Table extends Component {
         super();
         this.props = props;
         this.state = {
-            dbCars: [],
-            key: ''
+            dbCars: []
         }
-        console.log(this.state)
     }
     componentDidMount() {
         store.subscribe(() => {
 
             this.setState({
-                dbCars: store.getState().tableCars.filtersCar,
-                key: uuid()
+                dbCars: store.getState().tableCars.filtersCar
 
             })
+            console.log(store.getState().tableCars.filtersCar)
         })
     }
     render() {
         return (
             <Fragment>
                 <TableStyled>
-                    <thead>
-                        <TrHead>
-                            <th>ID</th>
-                            <th>Car Name</th>
-                            <th>Car Brand</th>
-                            <th>Price</th>
-                        </TrHead>
-                    </thead>
-                    <tbody>
-                        {this.state.dbCars.map((car, index) => {
-                            if (index % 2 !== 0) {
+                    <Head>
+                        <Th>ID</Th>
+                        <Th>Car Name</Th>
+                        <Th>Car Brand</Th>
+                        <Th>Price</Th>
+                    </Head>
+                    <TransitionGroup className='body'>
+                        {this.state.dbCars.map(({ id, car }, index) => {
+                            if (index % 2 > 0) {
                                 return (
-
-                                    <TrBody type='dark' key={car['id']}>
-                                        <Td border>{car['id']}</Td>
-                                        <Td border>{car['carName']}</Td>
-                                        <Td border>{car['carBrand']}</Td>
-                                        <Td>${car['price']}</Td>
-                                    </TrBody>
+                                    <CSSTransition
+                                        key={id}
+                                        timeout={300}
+                                        classNames="item"
+                                    >
+                                        <TrBody type='dark'>
+                                            <Container>
+                                                <Td border>{car['id']}</Td>
+                                            </Container>
+                                            <Container>
+                                                <Td border carName>{car['carName']}</Td>
+                                            </Container>
+                                            <Container>
+                                                <Td border>{car['carBrand']}</Td>
+                                            </Container>
+                                            <Container>
+                                                <Td>${car['price']}</Td>
+                                            </Container>
+                                        </TrBody>
+                                    </CSSTransition>
                                 )
-                            } else {
+                            }else{
                                 return (
-                                    <TrBody type='light' key={car['id']}>
-                                        <Td border>{car['id']}</Td>
-                                        <Td border>{car['carName']}</Td>
-                                        <Td border>{car['carBrand']}</Td>
-                                        <Td>${car['price']}</Td>
-                                    </TrBody>
-                                )
+                                    <CSSTransition
+                                        key={id}
+                                        timeout={300}
+                                        classNames="item"
+                                    >
+                                        <TrBody type='light'>
+                                            <Container>
+                                                <Td border>{car['id']}</Td>
+                                            </Container>
+                                            <Container>
+                                                <Td border carName>{car['carName']}</Td>
+                                            </Container>
+                                            <Container>
+                                                <Td border>{car['carBrand']}</Td>
+                                            </Container>
+                                            <Container>
+                                                <Td>${car['price']}</Td>
+                                            </Container>
+                                        </TrBody>
+                                    </CSSTransition>
+                                ) 
                             }
-                        })}
-                    </tbody>
 
+                        })}
+                    </TransitionGroup>
                 </TableStyled>
-            </Fragment>
+
+
+            </Fragment >
         )
     }
 }
